@@ -11,7 +11,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-Class EverPsGAdsTag extends Module
+class EverPsGAdsTag extends Module
 {
     private $_html = '';
     private $_postErrors = array();
@@ -21,7 +21,7 @@ Class EverPsGAdsTag extends Module
         $this->name = 'everpsgadstag';
         $this->tab = 'others';
         $this->version = '1.0.0';
-        $this->author = 'Team Ever'; 
+        $this->author = 'Team Ever';
 
         $this->bootstrap = true;
 
@@ -31,7 +31,7 @@ Class EverPsGAdsTag extends Module
         $this->description = $this->l('This module modifies your HTML code to include the tag required by Google Ads to work properly.');
         $this->confirmUninstall = $this->l('Are you sure you want to remove the Google Ads Tag?');
 
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);       
+        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
     }
 
     public function install()
@@ -39,7 +39,7 @@ Class EverPsGAdsTag extends Module
         if (!parent::install() || !$this->registerHook('displayHeader')) {
             return false;
         }
-
+        
         return true;
     }
 
@@ -90,7 +90,6 @@ Class EverPsGAdsTag extends Module
         $this->_html = '';
 
         if (Tools::isSubmit('btnSubmit')) {
-            
             $this->_postValidation();
 
             if (!count($this->_postErrors)) {
