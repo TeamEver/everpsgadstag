@@ -45,7 +45,7 @@ class EverPsGAdsTag extends Module
 
     public function uninstall()
     {
-        if (!Configuration::deleteByName('ID_GTAG') || !parent::uninstall()) {
+        if (!Configuration::deleteByName('EVERPSGADSTAG_ID_GTAG') || !parent::uninstall()) {
             return false;
         }
 
@@ -55,7 +55,7 @@ class EverPsGAdsTag extends Module
     private function _postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
-            if (!Tools::getValue('ID_GTAG')) {
+            if (!Tools::getValue('EVERPSGADSTAG_ID_GTAG')) {
                 $this->_postErrors[] = $this->l('The "GTag" field is required.');
             }
         }
@@ -64,7 +64,7 @@ class EverPsGAdsTag extends Module
     private function _postProcess()
     {
         if (Tools::isSubmit('btnSubmit')) {
-            Configuration::updateValue('ID_GTAG', Tools::getValue('ID_GTAG'));
+            Configuration::updateValue('EVERPSGADSTAG_ID_GTAG', Tools::getValue('EVERPSGADSTAG_ID_GTAG'));
         }
 
         $this->_html .= $this->displayConfirmation($this->l('GTag successfully updated'));
@@ -117,7 +117,7 @@ class EverPsGAdsTag extends Module
                     array(
                         'type' => 'text',
                         'label' => $this->l('GTag (AW-XXXXXXXXXX) : AW-'),
-                        'name' => 'ID_GTAG',
+                        'name' => 'EVERPSGADSTAG_ID_GTAG',
                         'desc' => 'Paste the 10 numbers of GTag here.',
                         'required' => true
                     ),
@@ -151,7 +151,7 @@ class EverPsGAdsTag extends Module
     public function getConfigFieldsValues()
     {
         return array(
-            'ID_GTAG' => Tools::getValue('ID_GTAG', Configuration::get('ID_GTAG')),
+            'EVERPSGADSTAG_ID_GTAG' => Tools::getValue('EVERPSGADSTAG_ID_GTAG', Configuration::get('EVERPSGADSTAG_ID_GTAG')),
         );
     }
 }
