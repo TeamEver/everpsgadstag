@@ -9,4 +9,4 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', everpsgadstag_id_gtag);
+gtag('config', 'AW-'+everpsgadstag_id_gtag);

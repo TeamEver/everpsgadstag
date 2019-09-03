@@ -46,6 +46,20 @@ class EverPsGAdsTag extends Module
             && Configuration::deleteByName('EVERPSGADSTAG_ID_GTAG');
     }
 
+    public function hookDisplayHeader()
+    {
+        $gtag = Configuration::get('EVERPSGADSTAG_ID_GTAG');
+
+        if (!$gtag) {
+            return;
+        }
+
+        Media::addJsDef(array('everpsgadstag_id_gtag' => $gtag));
+
+        $this->context->controller->addJS('https://www.googletagmanager.com/gtag/js?id=AW-'.$gtag);
+        $this->context->controller->addJS(_MODULE_DIR_.'everpsgadstag/views/js/everpsgadstag.js');
+    }
+
     private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
@@ -53,7 +67,7 @@ class EverPsGAdsTag extends Module
                 $this->postErrors[] = $this->l('The GTag field is required.');
             }
 
-            if (!Validate::isInt(Tools::getValue('EVERPSGADSTAG_ID_GTAG'))) { 
+            if (is_int(Tools::getValue('EVERPSGADSTAG_ID_GTAG'))) { 
                 $this->postErrors[] = $this->l('This GTag is not a valid integer.');
             }
 
@@ -70,20 +84,6 @@ class EverPsGAdsTag extends Module
         }
 
         $this->html .= $this->displayConfirmation($this->l('GTag successfully updated'));
-    }
-
-    public function hookDisplayHeader()
-    {
-        $gtag = Configuration::get('EVERPSGADSTAG_ID_GTAG');
-
-        if (!$gtag) {
-            return;
-        }
-
-        Media::addJsDef(array('everpsgadstag_id_gtag' => $gtag));
-
-        $this->context->controller->addJS('https://www.googletagmanager.com/gtag/js?id=AW-'.$gtag);
-        $this->context->controller->addJS(_MODULE_DIR_.'everpsgadstag/views/js/everpsgadstag.js');
     }
 
     public function getContent()
