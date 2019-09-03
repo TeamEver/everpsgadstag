@@ -1,0 +1,4 @@
+config*.xml
+*.cache
+*.swp
+tags
