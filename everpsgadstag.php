@@ -13,8 +13,8 @@ if (!defined('_PS_VERSION_')) {
 
 class EverPsGAdsTag extends Module
 {
-    private $_html = '';
-    private $_postErrors = array();
+    private $html = '';
+    private $postErrors = array();
 
     public function __construct()
     {
@@ -52,22 +52,22 @@ class EverPsGAdsTag extends Module
         return true;
     }
 
-    private function _postValidation()
+    private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
             if (!Tools::getValue('EVERPSGADSTAG_ID_GTAG')) {
-                $this->_postErrors[] = $this->l('The "GTag" field is required.');
+                $this->postErrors[] = $this->l('The "GTag" field is required.');
             }
         }
     }
 
-    private function _postProcess()
+    private function postProcess()
     {
         if (Tools::isSubmit('btnSubmit')) {
             Configuration::updateValue('EVERPSGADSTAG_ID_GTAG', Tools::getValue('EVERPSGADSTAG_ID_GTAG'));
         }
 
-        $this->_html .= $this->displayConfirmation($this->l('GTag successfully updated'));
+        $this->html .= $this->displayConfirmation($this->l('GTag successfully updated'));
     }
 
     public function hookDisplayHeader()
@@ -87,23 +87,23 @@ class EverPsGAdsTag extends Module
 
     public function getContent()
     {
-        $this->_html = '';
+        $this->html = '';
 
         if (Tools::isSubmit('btnSubmit')) {
-            $this->_postValidation();
+            $this->postValidation();
 
-            if (!count($this->_postErrors)) {
-                $this->_postProcess();
+            if (!count($this->postErrors)) {
+                $this->postProcess();
             } else {
-                foreach ($this->_postErrors as $err) {
-                    $this->_html .= $this->displayError($err);
+                foreach ($this->postErrors as $err) {
+                    $this->html .= $this->displayError($err);
                 }
             }
         }
 
-        $this->_html .= $this->renderForm();
+        $this->html .= $this->renderForm();
 
-        return $this->_html;
+        return $this->html;
     }
 
     public function renderForm()
