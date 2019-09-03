@@ -16,17 +16,12 @@ Class EverPsGAdsTag extends Module
     private $_html = '';
     private $_postErrors = array();
 
-    public $id_gtag;
-    public $string;
-
     public function __construct()
     {
         $this->name = 'everpsgadstag';
         $this->tab = 'others';
         $this->version = '1.0.0';
         $this->author = 'Team Ever'; 
-
-        $this->id_gtag = Configuration::get('ID_GTAG');
 
         $this->bootstrap = true;
 
@@ -37,38 +32,38 @@ Class EverPsGAdsTag extends Module
         $this->confirmUninstall = $this->l('Are you sure you want to remove the Google Ads Tag?');
 
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);       
-
-        if (!isset($this->id_gtag))
-            $this->warning = $this->l('The "GTag" fields must be configured before using this module.');
     }
 
     public function install()
     {
-        if (!parent::install() || !$this->registerHook('displayHeader'))
+        if (!parent::install() || !$this->registerHook('displayHeader')) {
             return false;
+        }
+
         return true;
     }
 
     public function uninstall()
     {
-        if (!Configuration::deleteByName('ID_GTAG') || !parent::uninstall())
+        if (!Configuration::deleteByName('ID_GTAG') || !parent::uninstall()) {
             return false;
+        }
+
         return true;
     }
 
     private function _postValidation()
     {
-        if (Tools::isSubmit('btnSubmit'))
-        {
-            if (!Tools::getValue('ID_GTAG'))
+        if (Tools::isSubmit('btnSubmit')) {
+            if (!Tools::getValue('ID_GTAG')) {
                 $this->_postErrors[] = $this->l('The "GTag" field is required.');
+            }
         }
     }
 
     private function _postProcess()
     {
-        if (Tools::isSubmit('btnSubmit'))
-        {
+        if (Tools::isSubmit('btnSubmit')) {
             Configuration::updateValue('ID_GTAG', Tools::getValue('ID_GTAG'));
         }
 
@@ -94,14 +89,17 @@ Class EverPsGAdsTag extends Module
     {
         $this->_html = '';
 
-        if (Tools::isSubmit('btnSubmit'))
-        {
+        if (Tools::isSubmit('btnSubmit')) {
+            
             $this->_postValidation();
-            if (!count($this->_postErrors))
+
+            if (!count($this->_postErrors)) {
                 $this->_postProcess();
-            else
-                foreach ($this->_postErrors as $err)
+            } else {
+                foreach ($this->_postErrors as $err) {
                     $this->_html .= $this->displayError($err);
+                }
+            }
         }
 
         $this->_html .= $this->renderForm();
