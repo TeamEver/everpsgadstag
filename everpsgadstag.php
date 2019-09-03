@@ -80,7 +80,7 @@ class EverPsGAdsTag extends Module
             return;
         }
 
-        Media::addJsDefL('everpsgadstag_id_gtag', $gtag); 
+        Media::addJsDef(array('everpsgadstag_id_gtag' => $gtag));
 
         $this->context->controller->addJS('https://www.googletagmanager.com/gtag/js?id=AW-'.$gtag);
         $this->context->controller->addJS(_MODULE_DIR_.'everpsgadstag/views/js/everpsgadstag.js');
