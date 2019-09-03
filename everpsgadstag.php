@@ -53,11 +53,11 @@ class EverPsGAdsTag extends Module
                 $this->postErrors[] = $this->l('The GTag field is required.');
             }
 
-            if (!Validate::isInt(Configuration::get('EVERPSGADSTAG_ID_GTAG'))) { 
+            if (!Validate::isInt(Tools::getValue('EVERPSGADSTAG_ID_GTAG'))) { 
                 $this->postErrors[] = $this->l('This GTag is not a valid integer.');
             }
 
-            if (strlen(Configuration::get('EVERPSGADSTAG_ID_GTAG')) != 10) {
+            if (strlen(Tools::getValue('EVERPSGADSTAG_ID_GTAG')) != 10) {
                 $this->postErrors[] = $this->l('The GTag must be 10 characters long.');
             }
         }
@@ -74,17 +74,16 @@ class EverPsGAdsTag extends Module
 
     public function hookDisplayHeader()
     {
-        return "
-            <!-- Global site tag (gtag.js) - Google AdWords: $this->id_gtag -->
-            <script async src=\"https://www.googletagmanager.com/gtag/js?idi=$this->id_gtag\"></script>
-            <script>
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
+        $gtag = Configuration::get('EVERPSGADSTAG_ID_GTAG');
 
-                gtag('config', '$this->id_gtag');
-            </script>
-        ";
+        if (!$gtag) {
+            return;
+        }
+
+        Media::addJsDefL('everpsgadstag_id_gtag', $gtag); 
+
+        $this->context->controller->addJS('https://www.googletagmanager.com/gtag/js?id=AW-'.$gtag);
+        $this->context->controller->addJS(_MODULE_DIR_.'everpsgadstag/views/js/everpsgadstag.js');
     }
 
     public function getContent()
