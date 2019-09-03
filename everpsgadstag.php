@@ -36,27 +36,29 @@ class EverPsGAdsTag extends Module
 
     public function install()
     {
-        if (!parent::install() || !$this->registerHook('displayHeader')) {
-            return false;
-        }
-        
-        return true;
+        return parent::install()
+            && $this->registerHook('displayHeader');
     }
 
     public function uninstall()
     {
-        if (!Configuration::deleteByName('EVERPSGADSTAG_ID_GTAG') || !parent::uninstall()) {
-            return false;
-        }
-
-        return true;
+        return parent::uninstall()
+            && Configuration::deleteByName('EVERPSGADSTAG_ID_GTAG');
     }
 
     private function postValidation()
     {
         if (Tools::isSubmit('btnSubmit')) {
             if (!Tools::getValue('EVERPSGADSTAG_ID_GTAG')) {
-                $this->postErrors[] = $this->l('The "GTag" field is required.');
+                $this->postErrors[] = $this->l('The GTag field is required.');
+            }
+
+            if (!Validate::isInt(Configuration::get('EVERPSGADSTAG_ID_GTAG'))) { 
+                $this->postErrors[] = $this->l('This GTag is not a valid integer.');
+            }
+
+            if (strlen(Configuration::get('EVERPSGADSTAG_ID_GTAG')) != 10) {
+                $this->postErrors[] = $this->l('The GTag must be 10 characters long.');
             }
         }
     }
@@ -119,7 +121,7 @@ class EverPsGAdsTag extends Module
                         'label' => $this->l('GTag (AW-XXXXXXXXXX) : AW-'),
                         'name' => 'EVERPSGADSTAG_ID_GTAG',
                         'desc' => 'Paste the 10 numbers of GTag here.',
-                        'required' => true
+                        'required' => true,
                     ),
                 ),
                 'submit' => array(
