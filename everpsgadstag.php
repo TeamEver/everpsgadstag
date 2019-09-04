@@ -43,21 +43,25 @@ class EverPsGAdsTag extends Module
     public function uninstall()
     {
         return parent::uninstall()
-            && Configuration::deleteByName('EVERPSGADSTAG_ID_GTAG');
+            && Configuration::deleteByName('EVERPSGADSTAG_ID_GTAG')
+            && Configuration::deleteByName('EVERPSGADS_TAG_CONVERSION_NAME');
     }
 
     public function hookDisplayHeader()
     {
         $gtag = Configuration::get('EVERPSGADSTAG_ID_GTAG');
+        $conversion_name = Configuration::get('EVERPSGADSTAG_CONVERSION_NAME');
 
-        if (!$gtag) {
+        if (!$gtag && !$conversion_name) {
             return;
         }
 
         Media::addJsDef(array('everpsgadstag_id_gtag' => $gtag));
+        Media::addJsDef(array('everpsgadstag_conversion_name' => $conversion_name));
 
         $this->context->controller->addJS('https://www.googletagmanager.com/gtag/js?id=AW-'.$gtag);
         $this->context->controller->addJS(_MODULE_DIR_.'everpsgadstag/views/js/everpsgadstag.js');
+        $this->context->controller->addJS(_MODULE_DIR_.'everpsgadstag/views/js/everpsgadsactionconversion.js');
     }
 
     private function postValidation()
@@ -67,12 +71,20 @@ class EverPsGAdsTag extends Module
                 $this->postErrors[] = $this->l('The GTag field is required.');
             }
 
-            if (is_int(Tools::getValue('EVERPSGADSTAG_ID_GTAG'))) { 
+            if (!Tools::getValue('EVERPSGADSTAG_CONVERSION_NAME')) {
+                $this->postErrors[] = $this->l('The Converison Name field is required.');
+            }
+
+            if (!is_numeric(Tools::getValue('EVERPSGADSTAG_ID_GTAG'))) {
                 $this->postErrors[] = $this->l('This GTag is not a valid integer.');
             }
 
             if (strlen(Tools::getValue('EVERPSGADSTAG_ID_GTAG')) != 10) {
                 $this->postErrors[] = $this->l('The GTag must be 10 characters long.');
+            }
+
+            if (!Validate::isGenericName(Tools::getValue('EVERPSGADSTAG_CONVERSION_NAME'))) {
+                $this->postErrors[] = $this->l('The conversion name is not a valid string.');
             }
         }
     }
@@ -81,9 +93,10 @@ class EverPsGAdsTag extends Module
     {
         if (Tools::isSubmit('btnSubmit')) {
             Configuration::updateValue('EVERPSGADSTAG_ID_GTAG', Tools::getValue('EVERPSGADSTAG_ID_GTAG'));
+            Configuration::updateValue('EVERPSGADSTAG_CONVERSION_NAME', Tools::getValue('EVERPSGADSTAG_CONVERSION_NAME'));
         }
 
-        $this->html .= $this->displayConfirmation($this->l('GTag successfully updated'));
+        $this->html .= $this->displayConfirmation($this->l('GTag and Conversion Name successfully updated'));
     }
 
     public function getContent()
@@ -122,6 +135,13 @@ class EverPsGAdsTag extends Module
                         'desc' => 'Paste the 10 numbers of GTag here.',
                         'required' => true,
                     ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Conversion Name :'),
+                        'name' => 'EVERPSGADSTAG_CONVERSION_NAME',
+                        'desc' => 'Paste the conversion name here',
+                        'required' => true,
+                    ),
                 ),
                 'submit' => array(
                     'title' => $this->l('Save'),
@@ -153,6 +173,7 @@ class EverPsGAdsTag extends Module
     {
         return array(
             'EVERPSGADSTAG_ID_GTAG' => Tools::getValue('EVERPSGADSTAG_ID_GTAG', Configuration::get('EVERPSGADSTAG_ID_GTAG')),
+            'EVERPSGADSTAG_CONVERSION_NAME' => Tools::getValue('EVERPSGADSTAG_CONVERSION_NAME', Configuration::get('EVERPSGADSTAG_CONVERSION_NAME')),
         );
     }
 }
